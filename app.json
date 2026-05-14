@@ -13,7 +13,8 @@
             "backgroundColor": "#ffffff"
         },
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "bundleIdentifier": "com.desmond9986.transaction-history-mobile"
         },
         "android": {
             "adaptiveIcon": {
@@ -21,10 +22,19 @@
                 "backgroundColor": "#ffffff"
             },
             "edgeToEdgeEnabled": true,
-            "predictiveBackGestureEnabled": false
+            "predictiveBackGestureEnabled": false,
+            "package": "com.desmond9986.transactionhistorymobile"
         },
         "web": {
             "favicon": "./assets/favicon.png"
-        }
+        },
+        "plugins": [
+            [
+                "expo-local-authentication",
+                {
+                    "faceIDPermission": "Allow this app to use Face ID to secure transaction history."
+                }
+            ]
+        ]
     }
 }
