@@ -1,19 +1,32 @@
-import type { ReactElement } from 'react';
-import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useState, type ReactElement } from 'react';
+import {
+    Alert,
+    FlatList,
+    Pressable,
+    RefreshControl,
+    StyleSheet,
+    Text,
+    View,
+    type ListRenderItem,
+} from 'react-native';
 
 import { Screen } from '../../../shared/components/Screen';
 import { SkeletonBox } from '../../../shared/components/SkeletonBox';
 import { COLORS, RADIUS, SPACING } from '../../../shared/theme/tokens';
+import { requestBiometricAuth } from '../../auth/services/biometricAuthService';
 import { TransactionRow } from '../components/TransactionRow';
 import { useTransactions } from '../hooks/useTransactions';
 import { TransactionHistoryRoute } from '../navigation/routes';
 import type { TransactionHistoryStackScreenProps } from '../navigation/types';
+import type { Transaction } from '../types/transaction';
 
 type TransactionHistoryScreenProps = TransactionHistoryStackScreenProps<
     typeof TransactionHistoryRoute.TransactionHistory
 >;
 
 export function TransactionHistoryScreen({ navigation }: TransactionHistoryScreenProps) {
+    const [isAmountVisible, setIsAmountVisible] = useState(false);
+    const [isAuthenticating, setIsAuthenticating] = useState(false);
     const {
         data: transactions = [],
         isError,
@@ -22,16 +35,82 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
         refetch,
     } = useTransactions();
 
-    function openTransactionDetail(transactionId: string) {
-        navigation.navigate(TransactionHistoryRoute.TransactionDetail, {
-            transactionId,
-        });
+    const openTransactionDetail = useCallback(
+        (transactionId: string) => {
+            navigation.navigate(TransactionHistoryRoute.TransactionDetail, {
+                transactionId,
+            });
+        },
+        [navigation],
+    );
+
+    const keyExtractor = useCallback((transaction: Transaction) => transaction.id, []);
+
+    const renderTransactionItem = useCallback<ListRenderItem<Transaction>>(
+        ({ item }) => (
+            <TransactionRow
+                isAmountVisible={isAmountVisible}
+                transaction={item}
+                onPressTransaction={openTransactionDetail}
+            />
+        ),
+        [isAmountVisible, openTransactionDetail],
+    );
+
+    async function toggleAmountVisibility() {
+        if (isAuthenticating) {
+            return;
+        }
+
+        if (isAmountVisible) {
+            setIsAmountVisible(false);
+            return;
+        }
+
+        setIsAuthenticating(true);
+
+        try {
+            const result = await requestBiometricAuth({
+                promptMessage: 'Show transaction amounts',
+                promptSubtitle: 'Use biometrics to reveal amounts',
+            });
+
+            if (result === 'authenticated') {
+                setIsAmountVisible(true);
+                return;
+            }
+
+            if (result === 'cancelled') {
+                return;
+            }
+
+            Alert.alert(
+                result === 'unavailable'
+                    ? 'Biometric authentication unavailable'
+                    : 'Authentication failed',
+                result === 'unavailable'
+                    ? 'Set up Face ID, Touch ID, or fingerprint unlock on this device to show amounts.'
+                    : 'Please try again to show transaction amounts.',
+            );
+        } finally {
+            setIsAuthenticating(false);
+        }
     }
 
     function renderHeader() {
         return (
             <View style={styles.header}>
                 <Text style={styles.title}>Transactions</Text>
+                <Pressable
+                    accessibilityState={{ disabled: isAuthenticating }}
+                    disabled={isAuthenticating}
+                    style={styles.amountToggleButton}
+                    onPress={() => void toggleAmountVisibility()}
+                >
+                    <Text style={styles.amountToggleButtonText}>
+                        {isAmountVisible ? 'Hide amount' : 'Show amount'}
+                    </Text>
+                </Pressable>
             </View>
         );
     }
@@ -77,7 +156,7 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
         return (
             <FlatList
                 data={transactions}
-                keyExtractor={(transaction) => transaction.id}
+                keyExtractor={keyExtractor}
                 contentContainerStyle={styles.listContent}
                 refreshControl={
                     <RefreshControl
@@ -89,12 +168,7 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
                 }
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={<Text style={styles.stateText}>No transactions found.</Text>}
-                renderItem={({ item }) => (
-                    <TransactionRow
-                        transaction={item}
-                        onPress={() => openTransactionDetail(item.id)}
-                    />
-                )}
+                renderItem={renderTransactionItem}
             />
         );
     }
@@ -124,13 +198,28 @@ const styles = StyleSheet.create({
         paddingTop: SPACING.space16,
     },
     header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         marginBottom: SPACING.space24,
     },
     title: {
+        flex: 1,
         color: COLORS.textPrimary,
         fontSize: 30,
         fontWeight: '800',
         lineHeight: 34,
+    },
+    amountToggleButton: {
+        paddingHorizontal: SPACING.space12,
+        paddingVertical: SPACING.space8,
+        backgroundColor: COLORS.brandSoft,
+        borderRadius: RADIUS.small,
+    },
+    amountToggleButtonText: {
+        color: COLORS.brandPrimary,
+        fontSize: 14,
+        fontWeight: '800',
     },
     listContent: {
         paddingBottom: SPACING.space24,

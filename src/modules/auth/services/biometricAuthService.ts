@@ -1,6 +1,6 @@
 import * as LocalAuthentication from 'expo-local-authentication';
 
-export type BiometricAuthResult = 'authenticated' | 'failed' | 'unavailable';
+export type BiometricAuthResult = 'authenticated' | 'cancelled' | 'failed' | 'unavailable';
 
 type RequestBiometricAuthOptions = {
     promptMessage: string;
@@ -27,7 +27,11 @@ export async function requestBiometricAuth({
             disableDeviceFallback: true,
         });
 
-        return result.success ? 'authenticated' : 'failed';
+        if (result.success) {
+            return 'authenticated';
+        }
+
+        return result.error === 'user_cancel' ? 'cancelled' : 'failed';
     } catch {
         return 'failed';
     }

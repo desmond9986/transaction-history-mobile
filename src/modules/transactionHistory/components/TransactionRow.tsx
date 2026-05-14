@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { COLORS, SPACING } from '../../../shared/theme/tokens';
@@ -9,15 +10,31 @@ import {
 } from '../utils/transactionFormatters';
 
 type TransactionRowProps = {
+    isAmountVisible: boolean;
     transaction: Transaction;
-    onPress: () => void;
+    onPressTransaction: (transactionId: string) => void;
 };
 
-export function TransactionRow({ transaction, onPress }: TransactionRowProps) {
-    const amountStyle = transaction.type === 'credit' ? styles.creditAmount : styles.debitAmount;
+const MASKED_TRANSACTION_AMOUNT = 'RM ****';
+
+function TransactionRowComponent({
+    isAmountVisible,
+    transaction,
+    onPressTransaction,
+}: TransactionRowProps) {
+    const visibleAmountStyle =
+        transaction.type === 'credit' ? styles.creditAmount : styles.debitAmount;
+    const amountStyle = isAmountVisible ? visibleAmountStyle : styles.maskedAmount;
+    const amountText = isAmountVisible
+        ? formatTransactionAmount(transaction)
+        : MASKED_TRANSACTION_AMOUNT;
+
+    function handlePress() {
+        onPressTransaction(transaction.id);
+    }
 
     return (
-        <Pressable style={styles.transactionRow} onPress={onPress}>
+        <Pressable style={styles.transactionRow} onPress={handlePress}>
             <View style={styles.transactionCopy}>
                 <Text style={styles.transactionDescription} numberOfLines={1}>
                     {transaction.description}
@@ -33,11 +50,13 @@ export function TransactionRow({ transaction, onPress }: TransactionRowProps) {
                 adjustsFontSizeToFit
                 minimumFontScale={0.8}
             >
-                {formatTransactionAmount(transaction)}
+                {amountText}
             </Text>
         </Pressable>
     );
 }
+
+export const TransactionRow = memo(TransactionRowComponent);
 
 const styles = StyleSheet.create({
     transactionRow: {
@@ -75,5 +94,8 @@ const styles = StyleSheet.create({
     },
     debitAmount: {
         color: COLORS.debitText,
+    },
+    maskedAmount: {
+        color: COLORS.textSecondary,
     },
 });
