@@ -2,6 +2,7 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { TransactionHistoryNavigator } from '../modules/transactionHistory/navigation/TransactionHistoryNavigator';
+import { COLORS } from '../shared/theme/tokens';
 import { AppRoute } from './routes';
 import type { AppStackParamList } from './types';
 
@@ -11,8 +12,8 @@ const navigationTheme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        background: '#ffffff',
-        card: '#ffffff',
+        background: COLORS.screenBackground,
+        card: COLORS.screenBackground,
     },
 };
 
@@ -34,7 +35,7 @@ export function AppNavigator() {
                 initialRouteName={AppRoute.TransactionHistory}
                 screenOptions={{
                     headerShown: false,
-                    contentStyle: { backgroundColor: '#ffffff' },
+                    contentStyle: { backgroundColor: COLORS.screenBackground },
                 }}
             >
                 {renderAppStackScreens()}
