@@ -84,6 +84,20 @@ Simulator > Features > Face ID > Matching Face
 Simulator > Features > Face ID > Non-matching Face
 ```
 
+> Note: If the iOS prompt shows `Try Face ID Again`, click it and then choose `Matching Face` or `Non-matching Face` from the Simulator menu. This is native iOS Simulator behavior, not app-level retry handling; the simulator does not automatically produce a Face ID result.
+
+### Run On A Physical iOS Device
+
+Before running the app, make sure the iPhone has Face ID or Touch ID enrolled, then connect it to the Mac and trust the computer when prompted.
+
+Install and launch the native development build on the device:
+
+```bash
+npm run ios -- --device
+```
+
+If Xcode asks for signing configuration, select a development team for the generated iOS project and run the command again.
+
 ### Run On Android
 
 Before running the app, open an Android Emulator and enroll a fingerprint in Android system settings:
@@ -101,6 +115,22 @@ npm run android
 This runs `expo run:android`, which creates and installs the Android development build.
 
 When the biometric prompt appears, use the emulator fingerprint controls to send a matching fingerprint.
+
+### Run On A Physical Android Device
+
+Before running the app, make sure the Android device has fingerprint or biometric unlock enrolled. Enable USB debugging, connect the device, and verify it is available:
+
+```bash
+adb devices
+```
+
+Install and launch the native development build on the device:
+
+```bash
+npm run android -- --device
+```
+
+If only one Android device or emulator is connected, `npm run android` can also install to that target.
 
 ### Start Metro Only
 
@@ -140,15 +170,23 @@ No automated unit test suite is included in this scoped demo.
 
 ## Screenshots
 
-Screenshots below are from an Android emulator. Native biometric prompts vary by platform and OS version.
+Native biometric prompts vary by platform and OS version.
 
-| Biometric unlock                                                                                | History masked                                                                                                | History visible                                                                                                 |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| <img src="./docs/screenshots/biometric-unlock.png" alt="Biometric unlock prompt" width="220" /> | <img src="./docs/screenshots/history-masked.png" alt="Transaction history with masked amounts" width="220" /> | <img src="./docs/screenshots/history-visible.png" alt="Transaction history with visible amounts" width="220" /> |
+### iOS
 
-| Amount reveal prompt                                                                                                     | Transaction detail                                                                                  | Refresh error                                                                             |
-| ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| <img src="./docs/screenshots/amount-biometric-prompt.png" alt="Biometric prompt before revealing amounts" width="220" /> | <img src="./docs/screenshots/transaction-detail.png" alt="Transaction detail screen" width="220" /> | <img src="./docs/screenshots/refresh-error.png" alt="Refresh error banner" width="220" /> |
+| Face ID prompt                                                                        | Loading state                                                                        | History masked                                                                                                        |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| <img src="./docs/screenshots/ios-face-id.png" alt="iOS Face ID prompt" width="220" /> | <img src="./docs/screenshots/ios-loading.png" alt="iOS loading state" width="220" /> | <img src="./docs/screenshots/ios-history-masked.png" alt="iOS transaction history with masked amounts" width="220" /> |
+
+| History visible                                                                                                         | Transaction detail                                                                                          |
+| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| <img src="./docs/screenshots/ios-history-visible.png" alt="iOS transaction history with visible amounts" width="220" /> | <img src="./docs/screenshots/ios-transaction-detail.png" alt="iOS transaction detail screen" width="220" /> |
+
+### Android
+
+| Amount reveal prompt                                                                                                             | Refresh error                                                                                     |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| <img src="./docs/screenshots/amount-biometric-prompt.png" alt="Android biometric prompt before revealing amounts" width="220" /> | <img src="./docs/screenshots/refresh-error.png" alt="Android refresh error banner" width="220" /> |
 
 ## Project Structure
 
