@@ -1,3 +1,5 @@
+export const TRANSACTION_QUERY_KEY = ['transactions'] as const;
+
 export type TransactionType = 'debit' | 'credit';
 
 export type Transaction = {
