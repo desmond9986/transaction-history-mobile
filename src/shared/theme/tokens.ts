@@ -7,6 +7,8 @@ export const COLORS = {
     brandSoft: '#dceee8',
     creditText: '#0f7a57',
     debitText: '#a64032',
+    errorText: '#9f2f24',
+    errorSoft: '#f8e1de',
 } as const;
 
 export const SPACING = {

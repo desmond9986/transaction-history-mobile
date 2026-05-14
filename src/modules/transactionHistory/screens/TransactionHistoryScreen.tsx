@@ -1,4 +1,4 @@
-import { useCallback, type ReactElement } from 'react';
+import { useCallback, useState, type ReactElement } from 'react';
 import {
     FlatList,
     Pressable,
@@ -18,21 +18,25 @@ import { TransactionHistoryRoute } from '../navigation/routes';
 import { useTransactionAmountVisibility } from '../state/TransactionAmountVisibilityContext';
 import type { TransactionHistoryStackScreenProps } from '../navigation/types';
 import type { Transaction } from '../types/transaction';
+import { getTransactionErrorMessage } from '../utils/transactionErrors';
 
 type TransactionHistoryScreenProps = TransactionHistoryStackScreenProps<
     typeof TransactionHistoryRoute.TransactionHistory
 >;
 
 export function TransactionHistoryScreen({ navigation }: TransactionHistoryScreenProps) {
+    const [refreshErrorMessage, setRefreshErrorMessage] = useState<string | null>(null);
     const { isAmountVisible, isAuthenticatingAmount, toggleAmountVisibility } =
         useTransactionAmountVisibility();
     const {
         data: transactions = [],
+        error,
         isError,
         isLoading,
         isRefetching,
         refetch,
     } = useTransactions();
+    const hasTransactions = transactions.length > 0;
 
     const openTransactionDetail = useCallback(
         (transactionId: string) => {
@@ -55,6 +59,15 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
         ),
         [isAmountVisible, openTransactionDetail],
     );
+
+    const refreshTransactions = useCallback(async () => {
+        setRefreshErrorMessage(null);
+
+        const result = await refetch();
+        if (result.isError && hasTransactions) {
+            setRefreshErrorMessage(getTransactionErrorMessage(result.error));
+        }
+    }, [hasTransactions, refetch]);
 
     function renderHeader() {
         return (
@@ -100,13 +113,27 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
         );
     }
 
-    function renderErrorState() {
+    function renderErrorState(message: string) {
         return (
             <View style={styles.stateContainer}>
                 <Text style={styles.stateTitle}>Unable to load transactions</Text>
-                <Pressable style={styles.retryButton} onPress={() => void refetch()}>
+                <Text style={styles.stateText}>{message}</Text>
+                <Pressable style={styles.retryButton} onPress={() => void refreshTransactions()}>
                     <Text style={styles.retryButtonText}>Try again</Text>
                 </Pressable>
+            </View>
+        );
+    }
+
+    function renderRefreshError() {
+        if (!refreshErrorMessage) {
+            return null;
+        }
+
+        return (
+            <View style={styles.refreshError}>
+                <Text style={styles.refreshErrorTitle}>Refresh failed</Text>
+                <Text style={styles.refreshErrorText}>{refreshErrorMessage}</Text>
             </View>
         );
     }
@@ -120,12 +147,13 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
                 refreshControl={
                     <RefreshControl
                         refreshing={isRefetching}
-                        onRefresh={() => void refetch()}
+                        onRefresh={() => void refreshTransactions()}
                         tintColor={COLORS.brandPrimary}
                         colors={[COLORS.brandPrimary]}
                     />
                 }
                 showsVerticalScrollIndicator={false}
+                ListHeaderComponent={renderRefreshError()}
                 ListEmptyComponent={<Text style={styles.stateText}>No transactions found.</Text>}
                 renderItem={renderTransactionItem}
             />
@@ -137,8 +165,8 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
             return renderLoadingState();
         }
 
-        if (isError) {
-            return renderErrorState();
+        if (isError && !hasTransactions) {
+            return renderErrorState(getTransactionErrorMessage(error));
         }
 
         return renderTransactionList();
@@ -226,6 +254,22 @@ const styles = StyleSheet.create({
         color: COLORS.textSecondary,
         fontSize: 15,
         textAlign: 'center',
+    },
+    refreshError: {
+        gap: SPACING.space4,
+        marginBottom: SPACING.space12,
+        padding: SPACING.space12,
+        backgroundColor: COLORS.errorSoft,
+        borderRadius: RADIUS.small,
+    },
+    refreshErrorTitle: {
+        color: COLORS.errorText,
+        fontSize: 14,
+        fontWeight: '800',
+    },
+    refreshErrorText: {
+        color: COLORS.errorText,
+        fontSize: 13,
     },
     retryButton: {
         paddingHorizontal: SPACING.space16,
