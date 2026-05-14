@@ -1,6 +1,5 @@
-import { useCallback, useState, type ReactElement } from 'react';
+import { useCallback, type ReactElement } from 'react';
 import {
-    Alert,
     FlatList,
     Pressable,
     RefreshControl,
@@ -13,10 +12,10 @@ import {
 import { Screen } from '../../../shared/components/Screen';
 import { SkeletonBox } from '../../../shared/components/SkeletonBox';
 import { COLORS, RADIUS, SPACING } from '../../../shared/theme/tokens';
-import { requestBiometricAuth } from '../../auth/services/biometricAuthService';
 import { TransactionRow } from '../components/TransactionRow';
 import { useTransactions } from '../hooks/useTransactions';
 import { TransactionHistoryRoute } from '../navigation/routes';
+import { useTransactionAmountVisibility } from '../state/TransactionAmountVisibilityContext';
 import type { TransactionHistoryStackScreenProps } from '../navigation/types';
 import type { Transaction } from '../types/transaction';
 
@@ -25,8 +24,8 @@ type TransactionHistoryScreenProps = TransactionHistoryStackScreenProps<
 >;
 
 export function TransactionHistoryScreen({ navigation }: TransactionHistoryScreenProps) {
-    const [isAmountVisible, setIsAmountVisible] = useState(false);
-    const [isAuthenticating, setIsAuthenticating] = useState(false);
+    const { isAmountVisible, isAuthenticatingAmount, toggleAmountVisibility } =
+        useTransactionAmountVisibility();
     const {
         data: transactions = [],
         isError,
@@ -57,53 +56,13 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
         [isAmountVisible, openTransactionDetail],
     );
 
-    async function toggleAmountVisibility() {
-        if (isAuthenticating) {
-            return;
-        }
-
-        if (isAmountVisible) {
-            setIsAmountVisible(false);
-            return;
-        }
-
-        setIsAuthenticating(true);
-
-        try {
-            const result = await requestBiometricAuth({
-                promptMessage: 'Show transaction amounts',
-                promptSubtitle: 'Use biometrics to reveal amounts',
-            });
-
-            if (result === 'authenticated') {
-                setIsAmountVisible(true);
-                return;
-            }
-
-            if (result === 'cancelled') {
-                return;
-            }
-
-            Alert.alert(
-                result === 'unavailable'
-                    ? 'Biometric authentication unavailable'
-                    : 'Authentication failed',
-                result === 'unavailable'
-                    ? 'Set up Face ID, Touch ID, or fingerprint unlock on this device to show amounts.'
-                    : 'Please try again to show transaction amounts.',
-            );
-        } finally {
-            setIsAuthenticating(false);
-        }
-    }
-
     function renderHeader() {
         return (
             <View style={styles.header}>
                 <Text style={styles.title}>Transactions</Text>
                 <Pressable
-                    accessibilityState={{ disabled: isAuthenticating }}
-                    disabled={isAuthenticating}
+                    accessibilityState={{ disabled: isAuthenticatingAmount }}
+                    disabled={isAuthenticatingAmount}
                     style={styles.amountToggleButton}
                     onPress={() => void toggleAmountVisibility()}
                 >

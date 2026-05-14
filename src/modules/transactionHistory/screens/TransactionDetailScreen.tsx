@@ -1,12 +1,15 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Screen } from '../../../shared/components/Screen';
 import { COLORS, RADIUS, SPACING } from '../../../shared/theme/tokens';
 import { useTransaction } from '../hooks/useTransaction';
 import { TransactionHistoryRoute } from '../navigation/routes';
+import { useTransactionAmountVisibility } from '../state/TransactionAmountVisibilityContext';
 import type { TransactionHistoryStackScreenProps } from '../navigation/types';
 import type { Transaction } from '../types/transaction';
 import {
+    MASKED_TRANSACTION_AMOUNT,
     formatTransactionAmount,
     formatTransactionDateTime,
     formatTransactionType,
@@ -23,6 +26,8 @@ type DetailRow = {
 
 export function TransactionDetailScreen({ navigation, route }: TransactionDetailScreenProps) {
     const transaction = useTransaction(route.params.transactionId);
+    const { isAmountVisible, isAuthenticatingAmount, toggleAmountVisibility } =
+        useTransactionAmountVisibility();
 
     function renderUnavailableState() {
         return (
@@ -35,24 +40,63 @@ export function TransactionDetailScreen({ navigation, route }: TransactionDetail
         );
     }
 
-    function renderHero(activeTransaction: Transaction) {
-        const amountStyle =
-            activeTransaction.type === 'credit' ? styles.creditAmount : styles.debitAmount;
+    function renderAmountVisibilityButton() {
+        const amountVisibilityIconName = isAmountVisible ? 'eye-off-outline' : 'eye-outline';
 
         return (
-            <View style={styles.detailHero}>
+            <Pressable
+                accessibilityLabel={isAmountVisible ? 'Hide amount' : 'Show amount'}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: isAuthenticatingAmount }}
+                disabled={isAuthenticatingAmount}
+                hitSlop={SPACING.space8}
+                style={styles.amountVisibilityButton}
+                onPress={() => void toggleAmountVisibility()}
+            >
+                <Ionicons name={amountVisibilityIconName} size={22} color={COLORS.brandPrimary} />
+            </Pressable>
+        );
+    }
+
+    function renderAmountRow(activeTransaction: Transaction) {
+        const visibleAmountStyle =
+            activeTransaction.type === 'credit' ? styles.creditAmount : styles.debitAmount;
+        const amountStyle = isAmountVisible ? visibleAmountStyle : styles.maskedAmount;
+        const amountText = isAmountVisible
+            ? formatTransactionAmount(activeTransaction)
+            : MASKED_TRANSACTION_AMOUNT;
+
+        return (
+            <View style={styles.amountRow}>
                 <Text
                     style={[styles.amount, amountStyle]}
                     numberOfLines={1}
                     adjustsFontSizeToFit
                     minimumFontScale={0.75}
                 >
-                    {formatTransactionAmount(activeTransaction)}
+                    {amountText}
                 </Text>
+                {renderAmountVisibilityButton()}
+            </View>
+        );
+    }
+
+    function renderHeroMeta(activeTransaction: Transaction) {
+        return (
+            <>
                 <Text style={styles.description} numberOfLines={2}>
                     {activeTransaction.description}
                 </Text>
                 <Text style={styles.meta}>{formatTransactionType(activeTransaction.type)}</Text>
+            </>
+        );
+    }
+
+    function renderHero(activeTransaction: Transaction) {
+        return (
+            <View style={styles.detailHero}>
+                {renderAmountRow(activeTransaction)}
+                {renderHeroMeta(activeTransaction)}
             </View>
         );
     }
@@ -123,7 +167,15 @@ const styles = StyleSheet.create({
         paddingHorizontal: SPACING.space8,
         paddingVertical: SPACING.space24,
     },
+    amountRow: {
+        maxWidth: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: SPACING.space8,
+    },
     amount: {
+        flexShrink: 1,
         fontSize: 38,
         fontWeight: '900',
         textAlign: 'center',
@@ -133,6 +185,17 @@ const styles = StyleSheet.create({
     },
     debitAmount: {
         color: COLORS.debitText,
+    },
+    maskedAmount: {
+        color: COLORS.textSecondary,
+    },
+    amountVisibilityButton: {
+        width: 36,
+        height: 36,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: RADIUS.small,
+        backgroundColor: COLORS.brandSoft,
     },
     description: {
         color: COLORS.textPrimary,

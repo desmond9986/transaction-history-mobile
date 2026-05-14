@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { COLORS, SPACING } from '../../../shared/theme/tokens';
 import type { Transaction } from '../types/transaction';
 import {
+    MASKED_TRANSACTION_AMOUNT,
     formatTransactionAmount,
     formatTransactionDate,
     formatTransactionType,
@@ -14,8 +15,6 @@ type TransactionRowProps = {
     transaction: Transaction;
     onPressTransaction: (transactionId: string) => void;
 };
-
-const MASKED_TRANSACTION_AMOUNT = 'RM ****';
 
 function TransactionRowComponent({
     isAmountVisible,
