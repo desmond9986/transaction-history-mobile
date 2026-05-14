@@ -65,6 +65,7 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
 
         const result = await refetch();
         if (result.isError && hasTransactions) {
+            // Keep cached rows visible when refresh fails; show the failure inline instead.
             setRefreshErrorMessage(getTransactionErrorMessage(result.error));
         }
     }, [hasTransactions, refetch]);

@@ -22,6 +22,7 @@ export async function requestBiometricAuth({
         const result = await LocalAuthentication.authenticateAsync({
             promptMessage,
             promptSubtitle,
+            // Keep this demo biometric-only instead of falling back to device passcode.
             fallbackLabel: '',
             cancelLabel: 'Cancel',
             disableDeviceFallback: true,

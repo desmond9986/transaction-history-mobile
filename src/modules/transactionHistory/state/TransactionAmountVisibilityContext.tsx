@@ -27,6 +27,7 @@ export function TransactionAmountVisibilityProvider({ children }: PropsWithChild
         setIsAmountVisible(false);
     }, []);
 
+    // Revealing amounts is the sensitive action; hiding can happen immediately.
     const showAmount = useCallback(async () => {
         if (isAmountVisible || isAuthenticatingAmount) {
             return;
@@ -46,6 +47,7 @@ export function TransactionAmountVisibilityProvider({ children }: PropsWithChild
             }
 
             if (result === 'cancelled') {
+                // User cancellation is intentional, so keep amounts masked without an alert.
                 return;
             }
 
