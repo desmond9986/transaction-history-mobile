@@ -7,7 +7,3 @@ export async function getTransactions(): Promise<Transaction[]> {
     await new Promise((resolve) => setTimeout(resolve, MOCK_TRANSACTION_DELAY_MS));
     return mockTransactions;
 }
-
-export async function getTransactionById(transactionId: string): Promise<Transaction | undefined> {
-    return mockTransactions.find(({ id }) => id === transactionId);
-}

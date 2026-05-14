@@ -21,7 +21,7 @@ function renderAppStackScreens() {
     return (
         <>
             <Stack.Screen
-                name={AppRoute.TransactionHistory}
+                name={AppRoute.TransactionHistoryStack}
                 component={TransactionHistoryNavigator}
             />
         </>
@@ -32,7 +32,7 @@ export function AppNavigator() {
     return (
         <NavigationContainer theme={navigationTheme}>
             <Stack.Navigator
-                initialRouteName={AppRoute.TransactionHistory}
+                initialRouteName={AppRoute.TransactionHistoryStack}
                 screenOptions={{
                     headerShown: false,
                     contentStyle: { backgroundColor: COLORS.screenBackground },

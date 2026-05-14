@@ -20,4 +20,5 @@ export const SPACING = {
 
 export const RADIUS = {
     small: 8,
+    large: 24,
 } as const;

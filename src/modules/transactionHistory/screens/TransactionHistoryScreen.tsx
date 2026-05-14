@@ -28,66 +28,93 @@ export function TransactionHistoryScreen({ navigation }: TransactionHistoryScree
         });
     }
 
-    const loadingRows: ReactElement[] = [];
-
-    for (let index = 0; index < 5; index += 1) {
-        loadingRows.push(
-            <View key={`loading-row-${index}`} style={styles.loadingRow}>
-                <View style={styles.loadingCopy}>
-                    <SkeletonBox style={styles.loadingTitlePlaceholder} />
-                    <SkeletonBox style={styles.loadingMetaPlaceholder} />
-                </View>
-                <SkeletonBox style={styles.loadingAmountPlaceholder} />
-            </View>,
+    function renderHeader() {
+        return (
+            <View style={styles.header}>
+                <Text style={styles.title}>Transactions</Text>
+            </View>
         );
+    }
+
+    function renderLoadingState() {
+        const loadingRows: ReactElement[] = [];
+
+        for (let index = 0; index < 5; index += 1) {
+            loadingRows.push(
+                <View key={`loading-row-${index}`} style={styles.loadingRow}>
+                    <View style={styles.loadingCopy}>
+                        <SkeletonBox style={styles.loadingTitlePlaceholder} />
+                        <SkeletonBox style={styles.loadingMetaPlaceholder} />
+                    </View>
+                    <SkeletonBox style={styles.loadingAmountPlaceholder} />
+                </View>,
+            );
+        }
+
+        return (
+            <View
+                style={styles.loadingList}
+                accessibilityRole="progressbar"
+                accessibilityLabel="Loading transactions"
+            >
+                {loadingRows}
+            </View>
+        );
+    }
+
+    function renderErrorState() {
+        return (
+            <View style={styles.stateContainer}>
+                <Text style={styles.stateTitle}>Unable to load transactions</Text>
+                <Pressable style={styles.retryButton} onPress={() => void refetch()}>
+                    <Text style={styles.retryButtonText}>Try again</Text>
+                </Pressable>
+            </View>
+        );
+    }
+
+    function renderTransactionList() {
+        return (
+            <FlatList
+                data={transactions}
+                keyExtractor={(transaction) => transaction.id}
+                contentContainerStyle={styles.listContent}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefetching}
+                        onRefresh={() => void refetch()}
+                        tintColor={COLORS.brandPrimary}
+                        colors={[COLORS.brandPrimary]}
+                    />
+                }
+                showsVerticalScrollIndicator={false}
+                ListEmptyComponent={<Text style={styles.stateText}>No transactions found.</Text>}
+                renderItem={({ item }) => (
+                    <TransactionRow
+                        transaction={item}
+                        onPress={() => openTransactionDetail(item.id)}
+                    />
+                )}
+            />
+        );
+    }
+
+    function renderContent() {
+        if (isLoading) {
+            return renderLoadingState();
+        }
+
+        if (isError) {
+            return renderErrorState();
+        }
+
+        return renderTransactionList();
     }
 
     return (
         <Screen style={styles.screen}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Transactions</Text>
-            </View>
-
-            {isLoading ? (
-                <View
-                    style={styles.loadingList}
-                    accessibilityRole="progressbar"
-                    accessibilityLabel="Loading transactions"
-                >
-                    {loadingRows}
-                </View>
-            ) : isError ? (
-                <View style={styles.stateContainer}>
-                    <Text style={styles.stateTitle}>Unable to load transactions</Text>
-                    <Pressable style={styles.retryButton} onPress={() => void refetch()}>
-                        <Text style={styles.retryButtonText}>Try again</Text>
-                    </Pressable>
-                </View>
-            ) : (
-                <FlatList
-                    data={transactions}
-                    keyExtractor={(transaction) => transaction.id}
-                    contentContainerStyle={styles.listContent}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={isRefetching}
-                            onRefresh={() => void refetch()}
-                            tintColor={COLORS.brandPrimary}
-                            colors={[COLORS.brandPrimary]}
-                        />
-                    }
-                    showsVerticalScrollIndicator={false}
-                    ListEmptyComponent={
-                        <Text style={styles.stateText}>No transactions found.</Text>
-                    }
-                    renderItem={({ item }) => (
-                        <TransactionRow
-                            transaction={item}
-                            onPress={() => openTransactionDetail(item.id)}
-                        />
-                    )}
-                />
-            )}
+            {renderHeader()}
+            {renderContent()}
         </Screen>
     );
 }

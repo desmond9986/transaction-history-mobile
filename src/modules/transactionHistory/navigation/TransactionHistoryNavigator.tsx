@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { COLORS } from '../../../shared/theme/tokens';
 import { TransactionDetailScreen } from '../screens/TransactionDetailScreen';
 import { TransactionHistoryScreen } from '../screens/TransactionHistoryScreen';
 import { TransactionHistoryRoute } from './routes';
@@ -17,6 +18,15 @@ function renderTransactionHistoryStackScreens() {
             <Stack.Screen
                 name={TransactionHistoryRoute.TransactionDetail}
                 component={TransactionDetailScreen}
+                options={{
+                    headerShown: true,
+                    title: '',
+                    headerBackButtonDisplayMode: 'minimal',
+                    headerShadowVisible: false,
+                    headerStyle: {
+                        backgroundColor: COLORS.screenBackground,
+                    },
+                }}
             />
         </>
     );
@@ -28,7 +38,7 @@ export function TransactionHistoryNavigator() {
             initialRouteName={TransactionHistoryRoute.TransactionHistory}
             screenOptions={{
                 headerShown: false,
-                contentStyle: { backgroundColor: '#ffffff' },
+                contentStyle: { backgroundColor: COLORS.screenBackground },
             }}
         >
             {renderTransactionHistoryStackScreens()}

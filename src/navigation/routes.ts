@@ -1,5 +1,5 @@
 import type { AppStackParamList } from './types';
 
 export const AppRoute = {
-    TransactionHistory: 'TransactionHistory',
+    TransactionHistoryStack: 'TransactionHistoryStack',
 } as const satisfies Record<keyof AppStackParamList, keyof AppStackParamList>;

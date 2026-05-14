@@ -1,16 +1,19 @@
 import type { PropsWithChildren } from 'react';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
 import { COLORS, SPACING } from '../theme/tokens';
 
 type ScreenProps = PropsWithChildren<{
+    includeTopInset?: boolean;
     style?: StyleProp<ViewStyle>;
 }>;
 
-export function Screen({ children, style }: ScreenProps) {
+export function Screen({ children, includeTopInset = true, style }: ScreenProps) {
+    const edges: Edge[] = includeTopInset ? ['top', 'bottom'] : ['bottom'];
+
     return (
-        <SafeAreaView edges={['top', 'bottom']} style={[styles.container, style]}>
+        <SafeAreaView edges={edges} style={[styles.container, style]}>
             {children}
         </SafeAreaView>
     );
