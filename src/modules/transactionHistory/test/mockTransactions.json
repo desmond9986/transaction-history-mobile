@@ -1,0 +1,242 @@
+[
+    {
+        "id": "txn-001",
+        "amount": 84.2,
+        "date": "2026-05-13T10:24:00+08:00",
+        "description": "Grocery market debit card payment",
+        "category": "Groceries",
+        "type": "debit"
+    },
+    {
+        "id": "txn-002",
+        "amount": 5200,
+        "date": "2026-05-12T09:00:00+08:00",
+        "description": "Monthly payroll credit",
+        "category": "Income",
+        "type": "credit"
+    },
+    {
+        "id": "txn-003",
+        "amount": 14.5,
+        "date": "2026-05-11T16:42:00+08:00",
+        "description": "Coffee house QR payment",
+        "category": "Dining",
+        "type": "debit"
+    },
+    {
+        "id": "txn-004",
+        "amount": 250,
+        "date": "2026-05-10T20:15:00+08:00",
+        "description": "DuitNow transfer received",
+        "category": "Transfer",
+        "type": "credit"
+    },
+    {
+        "id": "txn-005",
+        "amount": 126.8,
+        "date": "2026-05-09T08:30:00+08:00",
+        "description": "Scheduled utility bill payment",
+        "category": "Bills",
+        "type": "debit"
+    },
+    {
+        "id": "txn-006",
+        "amount": 30,
+        "date": "2026-05-08T21:18:00+08:00",
+        "description": "Prepaid mobile reload",
+        "category": "Mobile",
+        "type": "debit"
+    },
+    {
+        "id": "txn-007",
+        "amount": 12.5,
+        "date": "2026-05-08T12:00:00+08:00",
+        "description": "Card campaign cashback reward",
+        "category": "Rewards",
+        "type": "credit"
+    },
+    {
+        "id": "txn-008",
+        "amount": 68.9,
+        "date": "2026-05-07T19:45:00+08:00",
+        "description": "Restaurant dinner payment",
+        "category": "Dining",
+        "type": "debit"
+    },
+    {
+        "id": "txn-009",
+        "amount": 215.45,
+        "date": "2026-05-06T14:08:00+08:00",
+        "description": "Online marketplace purchase",
+        "category": "Shopping",
+        "type": "debit"
+    },
+    {
+        "id": "txn-010",
+        "amount": 49.9,
+        "date": "2026-05-06T11:32:00+08:00",
+        "description": "Returned item refund",
+        "category": "Refund",
+        "type": "credit"
+    },
+    {
+        "id": "txn-011",
+        "amount": 95,
+        "date": "2026-05-05T18:20:00+08:00",
+        "description": "Petrol station fuel payment",
+        "category": "Transport",
+        "type": "debit"
+    },
+    {
+        "id": "txn-012",
+        "amount": 180,
+        "date": "2026-05-04T07:50:00+08:00",
+        "description": "Monthly insurance payment",
+        "category": "Insurance",
+        "type": "debit"
+    },
+    {
+        "id": "txn-013",
+        "amount": 3.24,
+        "date": "2026-05-03T00:05:00+08:00",
+        "description": "Savings account interest credit",
+        "category": "Interest",
+        "type": "credit"
+    },
+    {
+        "id": "txn-014",
+        "amount": 6,
+        "date": "2026-05-03T15:12:00+08:00",
+        "description": "Parking fee",
+        "category": "Transport",
+        "type": "debit"
+    },
+    {
+        "id": "txn-015",
+        "amount": 42,
+        "date": "2026-05-02T20:05:00+08:00",
+        "description": "Cinema movie tickets",
+        "category": "Entertainment",
+        "type": "debit"
+    },
+    {
+        "id": "txn-016",
+        "amount": 120,
+        "date": "2026-05-01T22:10:00+08:00",
+        "description": "Split bill transfer received",
+        "category": "Transfer",
+        "type": "credit"
+    },
+    {
+        "id": "txn-017",
+        "amount": 99,
+        "date": "2026-04-30T06:00:00+08:00",
+        "description": "Monthly membership fee",
+        "category": "Fitness",
+        "type": "debit"
+    },
+    {
+        "id": "txn-018",
+        "amount": 37.65,
+        "date": "2026-04-29T13:28:00+08:00",
+        "description": "Pharmacy healthcare purchase",
+        "category": "Healthcare",
+        "type": "debit"
+    },
+    {
+        "id": "txn-019",
+        "amount": 300,
+        "date": "2026-04-28T09:15:00+08:00",
+        "description": "Performance bonus credit",
+        "category": "Income",
+        "type": "credit"
+    },
+    {
+        "id": "txn-020",
+        "amount": 58.7,
+        "date": "2026-04-27T17:40:00+08:00",
+        "description": "Book store purchase",
+        "category": "Shopping",
+        "type": "debit"
+    },
+    {
+        "id": "txn-021",
+        "amount": 24.9,
+        "date": "2026-04-26T12:18:00+08:00",
+        "description": "Lunch set payment",
+        "category": "Dining",
+        "type": "debit"
+    },
+    {
+        "id": "txn-022",
+        "amount": 75,
+        "date": "2026-04-25T08:05:00+08:00",
+        "description": "E-wallet top up",
+        "category": "Transfer",
+        "type": "debit"
+    },
+    {
+        "id": "txn-023",
+        "amount": 18.6,
+        "date": "2026-04-24T18:36:00+08:00",
+        "description": "Train fare payment",
+        "category": "Transport",
+        "type": "debit"
+    },
+    {
+        "id": "txn-024",
+        "amount": 88,
+        "date": "2026-04-23T10:12:00+08:00",
+        "description": "Freelance payment received",
+        "category": "Income",
+        "type": "credit"
+    },
+    {
+        "id": "txn-025",
+        "amount": 32.4,
+        "date": "2026-04-22T21:22:00+08:00",
+        "description": "Streaming subscription",
+        "category": "Entertainment",
+        "type": "debit"
+    },
+    {
+        "id": "txn-026",
+        "amount": 16.2,
+        "date": "2026-04-21T09:48:00+08:00",
+        "description": "Bakery purchase",
+        "category": "Dining",
+        "type": "debit"
+    },
+    {
+        "id": "txn-027",
+        "amount": 45,
+        "date": "2026-04-20T14:31:00+08:00",
+        "description": "Clinic consultation",
+        "category": "Healthcare",
+        "type": "debit"
+    },
+    {
+        "id": "txn-028",
+        "amount": 5,
+        "date": "2026-04-19T00:02:00+08:00",
+        "description": "Promo rebate credit",
+        "category": "Rewards",
+        "type": "credit"
+    },
+    {
+        "id": "txn-029",
+        "amount": 210,
+        "date": "2026-04-18T11:55:00+08:00",
+        "description": "Appliance store purchase",
+        "category": "Shopping",
+        "type": "debit"
+    },
+    {
+        "id": "txn-030",
+        "amount": 100,
+        "date": "2026-04-17T19:26:00+08:00",
+        "description": "Family transfer received",
+        "category": "Transfer",
+        "type": "credit"
+    }
+]
